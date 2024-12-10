@@ -1,0 +1,74 @@
+
+
+```{r}
+# Hyothesis 2: Is the number of total vaccines received dependent on the type of vaccine and the age of the patients?
+# Make a dataset with only the values needed for the hypothesis; donor_id, visit_age, vaccine, total_vaccines_received.
+hypothesis2 <- flu_metadata %>% select(donor_id,visit_age, vaccine, total_vaccines_received)
+
+# Total_vaccines_received is set as character, we need the values in a numeric class to move forward.
+hypothesis2$total_vaccines_received <- as.numeric(hypothesis2$total_vaccines_received) 
+
+# Filter the data for NA values 
+filter2 <- hypothesis2 %>% filter(total_vaccines_received != "NA") 
+
+# Visualisation of the filtered data by using a boxplot
+hypothesis2 %>%  
+  ggplot(aes(x=vaccine, y=total_vaccines_received, color=visit_age))+ 
+  geom_boxplot() + 
+  theme_classic() 
+# No values are found for vaccine types 2 and 3
+
+# Visit ages are categorized in age groups: (0-15),(16-30),(31-45),(46-60),(61+)
+# Function to catogorize the visit ages in the right age group
+get_age_group <- function(age) {
+  if (age >= 0 && age <= 15) { 
+    return("0-15") 
+    
+  } else if (age >= 16 && age <= 30) { 
+    return("16-30") 
+    
+  } else if (age >= 31 && age <= 45) { 
+    return("31-45") 
+    
+  } else if (age >= 46 && age <= 60) { 
+    return("46-60") 
+    
+  } else { 
+    return("61+")  # Group for ages above 60 
+    
+  } 
+  
+} 
+
+# Add a new column "age_group" by applying the function 
+hypothesis2$age_group <- sapply(hypothesis2$visit_age, get_age_group)
+
+# Filter hypothesis2 dataset for NA values in the total_vaccines_received values
+filter2 <- hypothesis2 %>% filter(total_vaccines_received != "NA") 
+
+# Visualisation of data by a boxplot 
+filter2 %>%  
+  ggplot(aes(x=age_group, y=total_vaccines_received, color=vaccine))+ 
+  geom_boxplot() + 
+  theme_classic()
+
+# Data is not distributed normally 
+# Testing if relations between variables are significant
+
+# Test 1
+lm_model <- lm(total_vaccines_received ~ age_group + vaccine, data = filter2)
+summary(lm_model)
+AIC(lm_model)
+
+# Test 2
+poisson_model <- glm(total_vaccines_received ~ age_group + vaccine, 
+                     data = filter2, 
+                     family = poisson(link = "log"))
+# Achterhalen of er dispersie optreedt in data 
+dispersion <- sum(residuals(poisson_model, type = "pearson")^2) / poisson_model$df.residual
+dispersion  # Als dit > 1 is, heb je overdispersie
+# Test uitvoeren 
+library(MASS)
+nb_model <- glm.nb(total_vaccines_received ~ age_group + vaccine, data = filter2)
+summary(nb_model)
+```
