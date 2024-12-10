@@ -42,3 +42,4 @@ ggplot(hypothesis1, aes(x = gender, y = d_geo_mean, fill = gender)) +
        y = "d_geo_mean") +
   theme_minimal()
 ```
+
