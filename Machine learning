@@ -1,0 +1,64 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.preprocessing import LabelEncoder
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.feature_selection import RFE
+
+# Load the dataset
+csv_location = "C:/Users/edr/Downloads/flu_metadata(1).csv"
+df = pd.read_csv(csv_location)
+
+# Removing missing values in target variable and specified features
+df = df.dropna(subset=['vaccine_response', 'gender', 'race', 'visit_age', 'bmi', 'influenza_infection_history', 'influenza_hospitalization'])
+
+# Preprocess data
+label_encoder = LabelEncoder()
+df['gender'] = label_encoder.fit_transform(df['gender'])  # Convert categorical to numeric
+df['race'] = label_encoder.fit_transform(df['race'])
+df['influenza_infection_history'] = label_encoder.fit_transform(df['influenza_infection_history'])
+df['influenza_hospitalization'] = label_encoder.fit_transform(df['influenza_hospitalization'])
+
+# Prepare features and target
+X = df[['gender', 'race', 'visit_age', 'bmi', 'influenza_infection_history', 'influenza_hospitalization']]
+y = df['vaccine_response']
+
+# Split data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train Decision Tree model
+model = DecisionTreeClassifier(random_state=42)
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Confusion Matrix
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(6, 4))
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["No Response", "Response"], yticklabels=["No Response", "Response"])
+plt.xlabel("Predicted")
+plt.ylabel("Actual")
+plt.title("Confusion Matrix")
+plt.show()
+
+# Print Classification Report
+print(classification_report(y_test, y_pred))
+
+# Feature Importance
+importances = model.feature_importances_
+plt.figure(figsize=(10, 6))
+plt.barh(X.columns, importances)
+plt.xlabel("Feature Importance")
+plt.title("Feature Importance")
+plt.show()
+
+# Recursive Feature Elimination (RFE) for top 5 features
+selector = RFE(model, n_features_to_select=5)
+selector = selector.fit(X_train, y_train)
+
+# Get the selected features
+selected_features = [X.columns[i] for i in range(len(X.columns)) if selector.support_[i]]
+print(f"Selected Features: {selected_features}")
