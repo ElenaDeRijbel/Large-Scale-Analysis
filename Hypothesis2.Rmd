@@ -36,8 +36,8 @@ get_age_group <- function(age) {
 # Add a new column "age_group" by applying the function 
 hypothesis2$age_group <- sapply(hypothesis2$visit_age, get_age_group)
 
-# Filter hypothesis2 dataset for NA values in the total_vaccines_received values and for vaccines in NULL category
-filter2 <- hypothesis2 %>% filter(total_vaccines_received != "NA", vaccine != "NULL") 
+# Filter hypothesis2 dataset for excluding category NULL as vaccine type
+filter2 <- hypothesis2 %>% filter(vaccine != "NULL") 
 
 # Visualisation of data by a boxplot 
 filter2 %>%  
