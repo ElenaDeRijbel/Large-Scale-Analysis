@@ -34,16 +34,26 @@ get_age_group <- function(age) {
 } 
 
 # Add a new column "age_group" by applying the function 
-hypothesis2$age_group <- sapply(hypothesis2$visit_age, get_age_group)
+filter2$age_group <- sapply(filter2$visit_age, get_age_group)
+
+# First visualisation of data by a boxplot
+filter2 %>% 
+  ggplot(aes(x=age_group, y=total_vaccines_received, color=vaccine))+
+  geom_boxplot() +
+  theme_classic()+
+  labs(title = "Boxplot of total vaccines recieved per age group with vaccine type", x = "Age group", y = "Total vaccines recieved")
+
 
 # Filter hypothesis2 dataset for excluding category NULL as vaccine type
 filter2 <- hypothesis2 %>% filter(vaccine != "NULL") 
 
-# Visualisation of data by a boxplot 
+# UPDATED Visualisation of data by a boxplot, without category NULL as vaccine type
 filter2 %>%  
   ggplot(aes(x=age_group, y=total_vaccines_received, color=vaccine))+ 
   geom_boxplot() + 
-  theme_classic()
+  theme_classic() +
+  labs(title = "UPDATED Boxplot of total vaccines recieved per age group with vaccine type", x = "Age group", y = "Total vaccines recieved")
+
 
 # Data is not distributed normally 
 # Testing if relations between variables are significant
