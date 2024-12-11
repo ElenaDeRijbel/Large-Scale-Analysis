@@ -62,3 +62,43 @@ selector = selector.fit(X_train, y_train)
 # Get the selected features
 selected_features = [X.columns[i] for i in range(len(X.columns)) if selector.support_[i]]
 print(f"Selected Features: {selected_features}")
+
+
+# Logistic Regression model
+
+# import the necessary libraries
+from sklearn.datasets import load_breast_cancer
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import LabelEncoder
+
+# load dataset
+csv_location = "/kaggle/input/flu-metadata/flu_metadata.csv"
+df = pd.read_csv(csv_location)
+df = df.dropna(subset=['vaccine_response', 'gender', 'race', 'visit_age', 'bmi', 'influenza_infection_history', 'influenza_hospitalization', 'vaccine'])
+
+label_encoder = LabelEncoder()
+df['gender'] = label_encoder.fit_transform(df['gender'])  # Convert categorical to numeric
+df['race'] = label_encoder.fit_transform(df['race'])
+df['influenza_infection_history'] = label_encoder.fit_transform(df['influenza_infection_history'])
+df['influenza_hospitalization'] = label_encoder.fit_transform(df['influenza_hospitalization'])
+df['vaccine'] = label_encoder.fit_transform(df['vaccine'])
+
+X = df[['gender', 'race', 'visit_age', 'bmi', 'influenza_infection_history', 'influenza_hospitalization','vaccine']]
+y = df['vaccine_response']
+
+# split the train and test dataset
+X_train, X_test,\
+    y_train, y_test = train_test_split(X, y,
+                                       test_size=0.20,
+                                       random_state=23)
+# LogisticRegression
+clf = LogisticRegression(random_state=0)
+clf.fit(X_train, y_train)
+
+# Prediction
+y_pred = clf.predict(X_test)
+
+acc = accuracy_score(y_test, y_pred)
+print("Logistic Regression model accuracy (in %):", acc*100)
