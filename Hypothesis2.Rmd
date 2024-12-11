@@ -14,24 +14,18 @@ filter2 <- hypothesis2 %>% filter(total_vaccines_received != "NA")
 # Visit ages are categorized in age groups: (0-15),(16-30),(31-45),(46-60),(61+)
 # Function to catogorize the visit ages in the right age group
 get_age_group <- function(age) {
-  if (age >= 0 && age <= 15) { 
-    return("0-15") 
-    
-  } else if (age >= 16 && age <= 30) { 
-    return("16-30") 
-    
-  } else if (age >= 31 && age <= 45) { 
-    return("31-45") 
-    
-  } else if (age >= 46 && age <= 60) { 
-    return("46-60") 
-    
-  } else { 
-    return("61+")  # Group for ages above 60 
-    
-  } 
-  
-} 
+  if (age >= 0 && age <= 15) 
+    {return("0-15")} 
+  else 
+    if (age >= 16 && age <= 30) {return("16-30")} 
+  else 
+    if (age >= 31 && age <= 45) {return("31-45")} 
+  else 
+    if (age >= 46 && age <= 60) {return("46-60")}
+  else 
+    if (age >= 61 && age <= 75) {return("61-75")}
+  else {return("75+")}
+}
 
 # Add a new column "age_group" by applying the function 
 filter2$age_group <- sapply(filter2$visit_age, get_age_group)
