@@ -56,7 +56,8 @@ filter2 %>%
   labs(title = "UPDATED Boxplot of total vaccines recieved per age group with vaccine type", x = "Age group", y = "Total vaccines recieved")
 
 
-# Data is not distributed normally 
+# Data is not distributed normally
+
 # Testing if relations between variables are significant
 
 # Test 1
