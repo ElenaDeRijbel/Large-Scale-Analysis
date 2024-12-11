@@ -44,8 +44,8 @@ filter2 %>%
   labs(title = "Boxplot of total vaccines recieved per age group with vaccine type", x = "Age group", y = "Total vaccines recieved")
 
 
-# Filter hypothesis2 dataset for excluding category NULL as vaccine type
-filter2 <- hypothesis2 %>% filter(vaccine != "NULL") 
+# Filter a second time dataset for excluding category NULL as vaccine type
+filter2 <- filter2 %>% filter(vaccine != "NULL") 
 
 # UPDATED Visualisation of data by a boxplot, without category NULL as vaccine type
 filter2 %>%  
