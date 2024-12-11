@@ -9,7 +9,14 @@ hypothesis2 <- flu_metadata %>% select(donor_id,visit_age, vaccine, total_vaccin
 hypothesis2$total_vaccines_received <- as.numeric(hypothesis2$total_vaccines_received) 
 
 # Filter the data for NA values 
-filter2 <- hypothesis2 %>% filter(total_vaccines_received != "NA") 
+filter2 <- hypothesis2 %>% filter(total_vaccines_received != "NA")
+
+# Look at distribution of visit_age to decide categories for age groups
+filter2 %>%
+  ggplot(aes(x=visit_age)) +
+  geom_histogram() +
+  theme_classic()+
+  labs(title = "Histogram of age distribution for filter2 results", x="Age of patient at visit time", y="Number of patients")
 
 # Visit ages are categorized in age groups: (0-15),(16-30),(31-45),(46-60),(61+)
 # Function to catogorize the visit ages in the right age group
