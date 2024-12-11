@@ -11,14 +11,6 @@ hypothesis2$total_vaccines_received <- as.numeric(hypothesis2$total_vaccines_rec
 # Filter the data for NA values 
 filter2 <- hypothesis2 %>% filter(total_vaccines_received != "NA") 
 
-# Visualisation of the filtered data by using a boxplot
-hypothesis2 %>%  
-  ggplot(aes(x=vaccine, y=total_vaccines_received, color=visit_age))+ 
-  geom_boxplot() + 
-  theme_classic() +
-  labs(title = "Boxplot of total vaccines recieved per age group", x = "Age group", y = "Total vaccines recieved")
-# No values are found for vaccine types 2 and 3
-
 # Visit ages are categorized in age groups: (0-15),(16-30),(31-45),(46-60),(61+)
 # Function to catogorize the visit ages in the right age group
 get_age_group <- function(age) {
