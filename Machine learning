@@ -12,7 +12,7 @@ csv_location = "C:/Users/edr/Downloads/flu_metadata(1).csv"
 df = pd.read_csv(csv_location)
 
 # Removing missing values in target variable and specified features
-df = df.dropna(subset=['vaccine_response', 'gender', 'race', 'visit_age', 'bmi', 'influenza_infection_history', 'influenza_hospitalization'])
+df = df.dropna(subset=['vaccine_response', 'gender', 'race', 'visit_age', 'bmi', 'influenza_infection_history', 'influenza_hospitalization', 'vaccine'])
 
 # Preprocess data
 label_encoder = LabelEncoder()
@@ -20,9 +20,10 @@ df['gender'] = label_encoder.fit_transform(df['gender'])  # Convert categorical 
 df['race'] = label_encoder.fit_transform(df['race'])
 df['influenza_infection_history'] = label_encoder.fit_transform(df['influenza_infection_history'])
 df['influenza_hospitalization'] = label_encoder.fit_transform(df['influenza_hospitalization'])
+df['vaccine'] = label_encoder.fit_transform(df['vaccine'])
 
 # Prepare features and target
-X = df[['gender', 'race', 'visit_age', 'bmi', 'influenza_infection_history', 'influenza_hospitalization']]
+X = df[['gender', 'race', 'visit_age', 'bmi', 'influenza_infection_history', 'influenza_hospitalization', 'vaccine']]
 y = df['vaccine_response']
 
 # Split data into train and test sets
@@ -64,7 +65,7 @@ selected_features = [X.columns[i] for i in range(len(X.columns)) if selector.sup
 print(f"Selected Features: {selected_features}")
 
 
-# Logistic Regression model
+# Binomial Logistic Regression model
 
 # import the necessary libraries
 from sklearn.datasets import load_breast_cancer
