@@ -22,7 +22,8 @@ filter1 <- hypothesis1 %>% filter(d_geo_mean != "NA") %>% arrange(d_geo_mean)
 filter1 %>%
   ggplot(aes(x=gender, y=d_geo_mean))+
   geom_boxplot() +
-  theme_classic()
+  theme_classic() +
+  labs(title = "Distribution of d_geo_mean in both genders")
 
 # Visualisation of the distribution of the hypothese1 data by a Q-Q plot.
 qqnorm(hypothesis1$d_geo_mean)
