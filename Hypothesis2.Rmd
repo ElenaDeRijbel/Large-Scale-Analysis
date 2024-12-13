@@ -80,27 +80,8 @@ qqnorm(trans_residuals)
 qqline(trans_residuals, col = "red")
 #Test and qq-plot confirm normality after transformation
 
+#to check for estimated effects of independent variables.
+summary(model_trans)
 
-#MOET NOG GECONTROLEERD WORDEN VAN TESTEN
 
-# Data is not distributed normally
 
-# Testing if relations between variables are significant
-
-# Test 1
-lm_model <- lm(total_vaccines_received ~ age_group + vaccine, data = filter2)
-summary(lm_model)
-AIC(lm_model)
-
-# Test 2
-poisson_model <- glm(total_vaccines_received ~ age_group + vaccine, 
-                     data = filter2, 
-                     family = poisson(link = "log"))
-# Achterhalen of er dispersie optreedt in data 
-dispersion <- sum(residuals(poisson_model, type = "pearson")^2) / poisson_model$df.residual
-dispersion  # Als dit > 1 is, heb je overdispersie
-# Test uitvoeren 
-library(MASS)
-nb_model <- glm.nb(total_vaccines_received ~ age_group + vaccine, data = filter2)
-summary(nb_model)
-```
