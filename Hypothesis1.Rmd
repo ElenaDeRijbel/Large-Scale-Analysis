@@ -28,6 +28,15 @@ filter1 %>%
 
 # Visualisation of the distribution of the hypothese1 data by a Q-Q plot.
 qqnorm(hypothesis1$d_geo_mean)
+qqline(hypothesis1$d_geo_mean, col = "red")
+
+# Logarithmic transformation
+hypothesis1$d_geo_mean_log <- log(hypothesis1$d_geo_mean + 1)  # Adding 1 to avoid log(0)
+
+# Visualisation of the logarithmically transformed data by a Q-Q plot
+qqnorm(hypothesis1$d_geo_mean_log)
+qqline(hypothesis1$d_geo_mean_log, col = "red")
+
 
 # Data does not define a normal distribution. Therefore we will use Mann-Whitney U-test (Wilcoxon rank-sum test)
 wilcox.test(d_geo_mean ~ gender, data = hypothesis1)
@@ -35,6 +44,7 @@ wilcox.test(d_geo_mean ~ gender, data = hypothesis1)
 # These results should also be visible in the mean and median of d_geo_mean in the two genders. 
 filter1 %>% group_by(gender)%>% summarise(mean_dgeo = mean(d_geo_mean), median_dgeo = median(d_geo_mean))
 
+# Violin plot for density distribution
 ggplot(hypothesis1, aes(x = gender, y = d_geo_mean, fill = gender)) +
   geom_violin(trim = FALSE) +
   labs(title = "Density of d_geo_mean in gendergroups",
