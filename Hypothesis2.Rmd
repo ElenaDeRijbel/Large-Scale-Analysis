@@ -81,7 +81,8 @@ qqline(trans_residuals, col = "red")
 #Test and qq-plot confirm normality after transformation
 
 #to check for estimated effects of independent variables.
-summary(model_trans)
+model_interaction <- lm(sqrt(memBcells) ~ age_group * vaccine, data = onlymemBcells)
+summary(model_interaction)
 
 
 
