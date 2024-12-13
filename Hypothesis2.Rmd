@@ -45,10 +45,10 @@ get_age_group <- function(age) {
 # Add a new column "age_group" by applying the function 
 onlymemBcells$age_group <- sapply(onlymemBcells$visit_age, get_age_group)
 
-#tellen welke donors niet in categorie gezet zijn met age function
+#count which donors were not assigned an age group
 tellNULLmem <- onlymemBcells %>% filter(age_group == "NULL")
 
-#boxplot for %memroy B cells per age group (& colored with vaccine)
+#boxplot for %memory B cells per age group (& colored with vaccine)
 onlymemBcells %>%
   ggplot(aes(x=age_group, y=memBcells, color=vaccine))+
   geom_boxplot() +
