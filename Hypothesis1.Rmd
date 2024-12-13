@@ -8,8 +8,6 @@ influenza <-  read_csv("C:/Users/rubya/Downloads/fluprint_export.csv")
 # Metadataset with only unique rows, multiple rows for the same donor_id are removed + without any cel-related values 
 flu_metadata <- influenza %>% select(-name, -name_formatted, -subset, -units, -data, -mesurment_id, -assay) %>% distinct()
 
-
-
 # Hypothesis 1: "Does the gender have an impact on the production of antibodies?"
 # Dataset with only values for donor_id, gender and d_geo_mean
 hypothesis1 <- flu_metadata %>% select(donor_id,gender, d_geo_mean)
