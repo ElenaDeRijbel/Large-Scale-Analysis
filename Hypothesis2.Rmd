@@ -58,7 +58,7 @@ onlymemBcells %>%
   labs(title = "Boxplot % memory B cells per vaccine type", x="Vaccine", y="% memory B cells")
 
 
-
+#MOET NOG GECONTROLEERD WORDEN VAN TESTEN
 
 # Data is not distributed normally
 
