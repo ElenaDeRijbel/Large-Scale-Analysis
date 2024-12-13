@@ -58,23 +58,59 @@ plt.xlabel("Feature Importance")
 plt.title("Feature Importance - Decision Tree")
 plt.show()
 
-# Recursive Feature Elimination (RFE) for Decision Tree
-selector = RFE(model, n_features_to_select=5)
-selector = selector.fit(X_train, y_train)
-selected_features = [X.columns[i] for i in range(len(X.columns)) if selector.support_[i]]
-print(f"Selected Features (Decision Tree): {selected_features}")
+# Recursive Feature Elimination (RFE) for Decision Tree with 6, 5, 4, and 3 features
+for n_features in [6, 5, 4, 3]:
+    selector = RFE(model, n_features_to_select=n_features)
+    selector = selector.fit(X_train, y_train)
+    selected_features = [X.columns[i] for i in range(len(X.columns)) if selector.support_[i]]
+    print(f"Selected Features (Decision Tree with {n_features} features): {selected_features}")
 
-# Logistic Regression Model
+    # Retraining Decision Tree Model with selected features
+    X_selected = df[selected_features]
+    X_train_sel, X_test_sel, y_train_sel, y_test_sel = train_test_split(X_selected, y, test_size=0.2, random_state=42)
+    model_sel = DecisionTreeClassifier(random_state=42)
+    model_sel.fit(X_train_sel, y_train_sel)
+    y_pred_dt_sel = model_sel.predict(X_test_sel)
+    
+    # Confusion Matrix for Decision Tree with selected features
+    cm_sel = confusion_matrix(y_test_sel, y_pred_dt_sel)
+    plt.figure(figsize=(6, 4))
+    sns.heatmap(cm_sel, annot=True, fmt="d", cmap="Blues", xticklabels=["No Response", "Response"], yticklabels=["No Response", "Response"])
+    plt.xlabel("Predicted")
+    plt.ylabel("Actual")
+    plt.title(f"Confusion Matrix - Decision Tree ({n_features} Selected Features)")
+    plt.show()
+
+    # Print Classification Report for Decision Tree with selected features
+    print(f"Decision Tree Classification Report ({n_features} Selected Features):")
+    print(classification_report(y_test_sel, y_pred_dt_sel))
+
+# Logistic Regression Model without feature elimination
 clf = LogisticRegression(random_state=0)
 clf.fit(X_train, y_train)
-
-# Logistic Regression Predictions
 y_pred_lr = clf.predict(X_test)
-
-# Logistic Regression Accuracy
 acc = accuracy_score(y_test, y_pred_lr)
-print(f"Logistic Regression Model Accuracy: {acc * 100:.2f}%")
-
-# Print Classification Report for Logistic Regression
-print("Logistic Regression Classification Report:")
+print(f"Logistic Regression Model Accuracy (Without Feature Elimination): {acc * 100:.2f}%")
+print("Logistic Regression Classification Report (Without Feature Elimination):")
 print(classification_report(y_test, y_pred_lr))
+
+# Recursive Feature Elimination (RFE) for Logistic Regression with 6, 5, 4, and 3 features
+for n_features in [6, 5, 4, 3]:
+    selector_lr = RFE(LogisticRegression(random_state=0), n_features_to_select=n_features)
+    selector_lr = selector_lr.fit(X_train, y_train)
+    selected_features_lr = [X.columns[i] for i in range(len(X.columns)) if selector_lr.support_[i]]
+    print(f"Selected Features (Logistic Regression with {n_features} features): {selected_features_lr}")
+
+    # Retraining Logistic Regression Model with selected features
+    X_selected_lr = df[selected_features_lr]
+    X_train_sel_lr, X_test_sel_lr, y_train_sel_lr, y_test_sel_lr = train_test_split(X_selected_lr, y, test_size=0.2, random_state=42)
+    clf_sel_lr = LogisticRegression(random_state=0)
+    clf_sel_lr.fit(X_train_sel_lr, y_train_sel_lr)
+    y_pred_lr_sel_lr = clf_sel_lr.predict(X_test_sel_lr)
+    
+    # Logistic Regression Accuracy with selected features
+    acc_sel_lr = accuracy_score(y_test_sel_lr, y_pred_lr_sel_lr)
+    print(f"Logistic Regression Model Accuracy ({n_features} Selected Features): {acc_sel_lr * 100:.2f}%")
+    print(f"Logistic Regression Classification Report ({n_features} Selected Features):")
+    print(classification_report(y_test_sel_lr, y_pred_lr_sel_lr))
+
