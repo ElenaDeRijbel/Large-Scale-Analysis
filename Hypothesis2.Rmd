@@ -1,59 +1,63 @@
 
 
 ```{r}
-# Hyothesis 2: Is the number of total vaccines received dependent on the type of vaccine and the age of the patients?
-# Make a dataset with only the values needed for the hypothesis; donor_id, visit_age, vaccine, total_vaccines_received.
-hypothesis2 <- flu_metadata %>% select(donor_id,visit_age, vaccine, total_vaccines_received)
+# Hyothesis 2: Is the % of memory B cells after vaccination associated with the age of the patient and the type of vaccine received?
+#reading dataset that is provided
+library(tidyverse)
+library(lubridate)
+influenza <- read_csv("C:/Users/linad/Downloads/fluprint_export.csv")
 
-# Total_vaccines_received is set as character, we need the values in a numeric class to move forward.
-hypothesis2$total_vaccines_received <- as.numeric(hypothesis2$total_vaccines_received) 
+#metadataset with only memory b cells and no category NULL vaccines, each patient is only 1 time in the dataset
+#data provides the outcome to test the memory B cells, in % in parent
+onlymemBcells <- influenza %>% filter(name == "memory B cells")
+onlymemBcells <- onlymemBcells %>% select(donor_id, visit_age, vaccine, data) %>% filter(vaccine != "NULL")
 
-# Filter the data for NA values 
-filter2 <- hypothesis2 %>% filter(total_vaccines_received != "NA")
-
-# Look at distribution of visit_age to decide categories for age groups
-filter2 %>%
+#visualization of age distribution with only mem b cells
+onlymemBcells %>%
   ggplot(aes(x=visit_age)) +
   geom_histogram() +
   theme_classic()+
-  labs(title = "Histogram of age distribution for filter2 results", x="Age of patient at visit time", y="Number of patients")
+  labs(title = "Age distribution onlymemBcells", x="Age of patient at visit time", y="Number of patients")
 
-# Visit ages are categorized in age groups: (0-15),(16-30),(31-45),(46-60),(61+)
-# Function to catogorize the visit ages in the right age group
+  labs(title = "Distribution onlymemBcells", x="% of memory B cells", y="Number of patients")
+
+#function to assign visit age to different age groups/categories
 get_age_group <- function(age) {
-  if (age >= 0 && age <= 15) 
-    {return("0-15")} 
+  if (age >= 0 && age < 10.50) 
+  {return("0-10")} 
   else 
-    if (age >= 16 && age <= 30) {return("16-30")} 
+    if (age >= 10.50 && age <= 15.49) {return("10-15")} 
   else 
-    if (age >= 31 && age <= 45) {return("31-45")} 
+    if (age >= 15.50 && age <= 20.49) {return("15-20")} 
   else 
-    if (age >= 46 && age <= 60) {return("46-60")}
+    if (age >= 20.50 && age <= 25.49) {return("20-25")}
   else 
-    if (age >= 61 && age <= 75) {return("61-75")}
-  else {return("75+")}
+    if (age >= 25.50 && age <= 30.49) {return("26-30")}
+  else {return("30+")}
 }
 
 # Add a new column "age_group" by applying the function 
-filter2$age_group <- sapply(filter2$visit_age, get_age_group)
+onlymemBcells$age_group <- sapply(onlymemBcells$visit_age, get_age_group)
 
-# First visualisation of data by a boxplot
-filter2 %>% 
-  ggplot(aes(x=age_group, y=total_vaccines_received, color=vaccine))+
+#tellen welke donors niet in categorie gezet zijn met age function
+tellNULLmem <- onlymemBcells %>% filter(age_group == "NULL")
+
+#boxplot for %memroy B cells per age group (& colored with vaccine)
+onlymemBcells %>%
+  ggplot(aes(x=age_group, y=data, color=vaccine))+
   geom_boxplot() +
-  theme_classic()+
-  labs(title = "Boxplot of total vaccines recieved per age group with vaccine type", x = "Age group", y = "Total vaccines recieved")
-
-
-# Filter a second time dataset for excluding category NULL as vaccine type
-filter2 <- filter2 %>% filter(vaccine != "NULL") 
-
-# UPDATED Visualisation of data by a boxplot, without category NULL as vaccine type
-filter2 %>%  
-  ggplot(aes(x=age_group, y=total_vaccines_received, color=vaccine))+ 
-  geom_boxplot() + 
   theme_classic() +
-  labs(title = "UPDATED Boxplot of total vaccines recieved per age group with vaccine type", x = "Age group", y = "Total vaccines recieved")
+  labs(title = "Boxplot % memory B cells per age group", x="Age group", y="% memory B cells")
+
+
+#Boxplot for vaccine type & mem B cells
+onlymemBcells %>%
+  ggplot(aes(x=vaccine, y=data))+
+  geom_boxplot() +
+  theme_classic() +
+  labs(title = "Boxplot % memory B cells per vaccine type", x="Vaccine", y="% memory B cells")
+
+
 
 
 # Data is not distributed normally
