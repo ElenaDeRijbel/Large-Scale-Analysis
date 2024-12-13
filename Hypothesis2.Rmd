@@ -16,9 +16,9 @@ onlymemBcells <- onlymemBcells %>% rename(memBcells = data)
 #visualization of age distribution with only mem b cells
 onlymemBcells %>%
   ggplot(aes(x=visit_age)) +
-  geom_histogram() +
+  geom_histogram(binwidth = 4, fill = "skyblue", color = "black") +
   theme_classic()+
-  labs(title = "Age distribution onlymemBcells", x="Age of patient at visit time", y="Number of patients")
+  labs(title = "Age distribution of patients with value for memory B cells", x="Age of patient at visit time", y="Number of patients")
 
 #visualization of distribution of memory B cells
 onlymemBcells %>%
