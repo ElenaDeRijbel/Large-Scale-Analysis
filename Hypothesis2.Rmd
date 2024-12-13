@@ -25,7 +25,7 @@ onlymemBcells %>%
   ggplot(aes(x=memBcells)) +
   geom_histogram() +
   theme_classic()+
-  labs(title = "Distribution onlymemBcells", x="% of memory B cells", y="Number of patients")
+  labs(title = "Distribution memBcells", x="% of memory B cells", y="Number of patients")
 
 #function to assign visit age to different age groups/categories
 get_age_group <- function(age) {
