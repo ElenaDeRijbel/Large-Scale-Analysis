@@ -11,6 +11,7 @@ influenza <- read_csv("C:/Users/linad/Downloads/fluprint_export.csv")
 #data provides the outcome to test the memory B cells, in % in parent
 onlymemBcells <- influenza %>% filter(name == "memory B cells")
 onlymemBcells <- onlymemBcells %>% select(donor_id, visit_age, vaccine, data) %>% filter(vaccine != "NULL")
+onlymemBcells <- onlymemBcells %>% rename(memBcells = data)
 
 #visualization of age distribution with only mem b cells
 onlymemBcells %>%
@@ -21,7 +22,7 @@ onlymemBcells %>%
 
 #visualization of distribution of memory B cells
 onlymemBcells %>%
-  ggplot(aes(x=data)) +
+  ggplot(aes(x=memBcells)) +
   geom_histogram() +
   theme_classic()+
   labs(title = "Distribution onlymemBcells", x="% of memory B cells", y="Number of patients")
@@ -49,7 +50,7 @@ tellNULLmem <- onlymemBcells %>% filter(age_group == "NULL")
 
 #boxplot for %memroy B cells per age group (& colored with vaccine)
 onlymemBcells %>%
-  ggplot(aes(x=age_group, y=data, color=vaccine))+
+  ggplot(aes(x=age_group, y=memBcells, color=vaccine))+
   geom_boxplot() +
   theme_classic() +
   labs(title = "Boxplot % memory B cells per age group", x="Age group", y="% memory B cells")
@@ -57,10 +58,27 @@ onlymemBcells %>%
 
 #Boxplot for vaccine type & mem B cells
 onlymemBcells %>%
-  ggplot(aes(x=vaccine, y=data))+
+  ggplot(aes(x=vaccine, y=memBcells))+
   geom_boxplot() +
   theme_classic() +
   labs(title = "Boxplot % memory B cells per vaccine type", x="Vaccine", y="% memory B cells")
+
+#testing normality in data with Shapiro-Wilk-test
+model <- lm(memBcells ~ age_group + vaccine, data = onlymemBcells)
+residuals <- resid(model)
+shapiro.test(residuals)
+# visualisation distibution confirming Shapiro-Wilk test
+qqnorm(residuals)
+qqline(residuals, col = "red")
+
+# Data is not distributed normally, test transformations with Shapiro-Wilk test
+model_trans <- lm(sqrt(memBcells) ~ age_group + vaccine, data = onlymemBcells)
+trans_residuals<-resid(model_trans)
+shapiro.test(trans_residuals)
+#visualization of distibution after sqrt-transformation
+qqnorm(trans_residuals)
+qqline(trans_residuals, col = "red")
+#Test and qq-plot confirm normality after transformation
 
 
 #MOET NOG GECONTROLEERD WORDEN VAN TESTEN
