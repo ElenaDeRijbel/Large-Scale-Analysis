@@ -27,6 +27,14 @@ onlymemBcells %>%
   theme_classic()+
   labs(title = "Distribution memBcells", x="% of memory B cells", y="Number of patients")
 
+onlyvaccine3 <- onlymemBcells %>% filter(vaccine == 3)
+#only 3 patients in our dataset with vaccine 3
+onlyvaccine5 <- onlymemBcells %>% filter(vaccine == 5)
+#only 3 patients in our dataset with vaccine 5
+
+#after data exploration only 3 patients with vaccine 3 and 3 with vaccine 5, so excluding these types out our analysis
+onlymemBcells <- onlymemBcells %>% filter(vaccine == 1 | vaccine ==2 | vaccine ==4)
+
 #function to assign visit age to different age groups/categories
 get_age_group <- function(age) {
   if (age >= 0 && age < 10.50) 
@@ -80,9 +88,19 @@ qqnorm(trans_residuals)
 qqline(trans_residuals, col = "red")
 #Test and qq-plot confirm normality after transformation
 
+#check assumption linearity
+plot(model_trans, which = 1)
+#no pattern is visible, data is linear
+
+#check assumption of homoscedasticity
+library(car)
+leveneTest(sqrt(memBcells) ~ age_group * vaccine, data = onlymemBcells)
+
+#2 way anova test
+anova_result <- aov(sqrt(memBcells) ~ age_group * vaccine, data = onlymemBcells)
+summary(anova_result)
+
+
 #to check for estimated effects of independent variables.
 model_interaction <- lm(sqrt(memBcells) ~ age_group * vaccine, data = onlymemBcells)
 summary(model_interaction)
-
-
-
