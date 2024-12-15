@@ -72,7 +72,7 @@ onlymemBcells %>%
   labs(title = "Boxplot % memory B cells per vaccine type", x="Vaccine", y="% memory B cells")
 
 #testing normality in data with Shapiro-Wilk-test
-model <- lm(memBcells ~ age_group + vaccine, data = onlymemBcells)
+model <- lm(memBcells ~ age_group * vaccine, data = onlymemBcells)
 residuals <- resid(model)
 shapiro.test(residuals)
 # visualisation distibution confirming Shapiro-Wilk test
@@ -80,7 +80,7 @@ qqnorm(residuals)
 qqline(residuals, col = "red")
 
 # Data is not distributed normally, test transformations with Shapiro-Wilk test
-model_trans <- lm(sqrt(memBcells) ~ age_group + vaccine, data = onlymemBcells)
+model_trans <- lm(sqrt(memBcells) ~ age_group * vaccine, data = onlymemBcells)
 trans_residuals<-resid(model_trans)
 shapiro.test(trans_residuals)
 #visualization of distibution after sqrt-transformation
