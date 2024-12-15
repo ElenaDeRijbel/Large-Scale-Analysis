@@ -13,6 +13,10 @@ onlymemBcells <- influenza %>% filter(name == "memory B cells")
 onlymemBcells <- onlymemBcells %>% select(donor_id, visit_age, vaccine, data) %>% filter(vaccine != "NULL")
 onlymemBcells <- onlymemBcells %>% rename(memBcells = data)
 
+# check that visit_age & memBcells is numeric
+onlymemBcells$visit_age <- as.numeric(onlymemBcells$visit_age)
+onlymemBcells$memBcells <- as.numeric(onlymemBcells$memBcells)
+
 #visualization of age distribution with only mem b cells
 onlymemBcells %>%
   ggplot(aes(x=visit_age)) +
